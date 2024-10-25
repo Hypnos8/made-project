@@ -1,0 +1,50 @@
+// Write data into a SQLite database called “airports.sqlite”, in the table “airports”
+// Do not save the following columns: Zeitzone, DST, Zeitzonen-Datenbank, geo_punkt
+// Assign fitting built-in SQLite types (e.g., BIGINT, TEXT or FLOAT) to all other columns
+// Do not rename column names
+// No further data validation is required, do not drop any rows or change any data points
+
+pipeline airportsPipeline {
+
+
+    aiportExtractor 
+    -> airportTextFileInterpreter
+    -> airportCSVInterpreter 
+    -> airportTableInterpreter
+    -> aiprotLoader;
+
+    block aiportExtractor oftype HttpExtractor {
+
+    // 8. Properties are assigned to concrete values.
+    // Here, we specify the URL where the file shall be downloaded from.
+    url: "https://opendata.rhein-kreis-neuss.de/api/explore/v2.1/catalog/datasets/rhein-kreis-neuss-flughafen-weltweit/exports/csv?lang=en&timezone=Europe%2FBerlin&use_labels=true&delimiter=%3B";
+  }
+
+  block aiprotLoader oftype SQLiteLoader {
+    table: "airports";
+    file: "./airports.sqlite";
+  }
+
+    block airportCSVInterpreter oftype CSVInterpreter {
+      delimiter: ";";
+  }
+
+    block airportTableInterpreter oftype TableInterpreter {
+    header: true;
+    columns: [
+      "Lfd. Nummer" oftype integer,
+      "Name des Flughafens" oftype text,
+      "Ort" oftype text,
+      "Land" oftype text,
+      "IATA" oftype text,
+      "ICAO" oftype text,
+      "Latitude" oftype decimal,
+      "Longitude" oftype decimal,
+      "Altitude" oftype integer
+    ];
+  }
+    block airportTextFileInterpreter oftype TextFileInterpreter { }
+
+
+
+}
