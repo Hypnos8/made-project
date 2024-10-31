@@ -1,47 +1,47 @@
 pipeline baumpflanzungen {
     extractor ->textFileInterpreter->cSVInterpreter->tableInterpreter->loader;
 
-     block extractor oftype HttpExtractor {
-
-    // 8. Properties are assigned to concrete values.
-    // Here, we specify the URL where the file shall be downloaded from.
-    url: "https://opendata.rhein-kreis-neuss.de/api/v2/catalog/datasets/stadt-neuss-herbstpflanzung-2023/exports/csv";
+    block extractor oftype HttpExtractor {
+        url: "https://opendata.rhein-kreis-neuss.de/api/v2/catalog/datasets/stadt-neuss-herbstpflanzung-2023/exports/csv";
     }
 
     block textFileInterpreter oftype TextFileInterpreter { }
 
     block cSVInterpreter oftype CSVInterpreter {
       delimiter: ";";
-  }
+    }
 
-      block tableInterpreter oftype TableInterpreter {
-    header: true;
-    columns: [
-      "lfd_nr" oftype integer,
-      "stadtteil" oftype Vogelsang,
-      "standort" oftype text,
-      "baumart_botanisch" oftype text,
-      // ignore "baumart_deutsch" oftype text,
-      "id" oftype Geopoint,
-      "baumfamilie" oftype text,
-    ];
-  }
+    block tableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+        "lfd_nr" oftype integer,
+        "stadtteil" oftype Vogelsang,
+        "standort" oftype text,
+        "baumart_botanisch" oftype text,
+        // ignore "baumart_deutsch" oftype text,
+        "id" oftype Geopoint,
+        "baumfamilie" oftype text,
+        ];
+    }
 
-block loader oftype SQLiteLoader {
-    table: "trees";
-    file: "./trees.sqlite";
-  }
+    block loader oftype SQLiteLoader {
+        table: "trees";
+        file: "./trees.sqlite";
+    }
 
-valuetype Geopoint oftype text {
-    constraints: [GeoPointFormat];
-}
-constraint GeoPointFormat oftype RegexConstraint {
-    regex: /^\d{1,3}\.\d+, \d{1,3}\.\d+/ ;
-}
-valuetype Vogelsang oftype text {
-    constraints: [VogelsangConstraint];
-}
-constraint VogelsangConstraint oftype RegexConstraint {
-    regex: /Vogelsang.*/;
-}
+    valuetype Geopoint oftype text {
+        constraints: [GeoPointFormat];
+    }
+
+    constraint GeoPointFormat oftype RegexConstraint {
+        regex: /^\d{1,3}\.\d+, \d{1,3}\.\d+/ ;
+    }
+
+    valuetype Vogelsang oftype text {
+        constraints: [VogelsangConstraint];
+    }
+    
+    constraint VogelsangConstraint oftype RegexConstraint {
+        regex: /Vogelsang.*/;
+    }
 }
