@@ -17,7 +17,7 @@ Judging a book by its cover: Analyzing the relation between a disordered environ
 ## Main Question
 
 <!-- Think about one main question you want to answer based on the data. -->
-1. Do reported signs of disorder,like graffiti or littering, correlate with crime in Los Angeles? 
+Do reported signs of disorder,like graffiti or littering, correlate with crime in Los Angeles? 
 
 ## Description
 
@@ -40,8 +40,8 @@ This insight can be useful for individuals as well as businesses as it indicates
 
 ### Datasource1: Crime Data
 * Metadata URL: https://data.lacity.org/Public-Safety/Crime-Data-from-2020-to-Present/2nrs-mtv8/about_data
-* Data URL: 
-* Data Type: CSV
+* Data URL: https://github.com/Hypnos8/made-project/blob/main/project/Crime_Data_from_2020_to_Present_20241105.zip
+* Data Type: Zip -> CSV
 
 The data Source is provided by the Los Angeles Police Department (LAPD). It reflects incidents of crime in Los Angeles since 2020. 
 
@@ -50,21 +50,8 @@ Note: As the LAPD adapts to a new Record Management Systems the data starting fr
 
 ### Datasource2: MyLA311 Service Request Data
 * Metadata URL: https://data.lacity.org/City-Infrastructure-Service-Requests/MyLA311-Service-Request-Data-2023/4a4x-mna2/about_data
-* Data URL: xxx
-### Datasource1: Crime Data
-* Metadata URL: https://data.lacity.org/Public-Safety/Crime-Data-from-2020-to-Present/2nrs-mtv8/about_data
-* Data URL: 
-* Data Type: CSV
-
-The data Source is provided by the Los Angeles Police Department (LAPD). It reflects incidents of crime in Los Angeles since 2020. 
-
-It was Last Updated on October 30, 2024. 
-Note: As the LAPD adapts to a new Record Management Systems the data starting from  March 7th 2024 might not  contain all all incidents reported to the LAPD.
-
-### Datasource2: MyLA311 Service Request Data
-* Metadata URL: https://data.lacity.org/City-Infrastructure-Service-Requests/MyLA311-Service-Request-Data-2023/4a4x-mna2/about_data
-* Data URL: xxx
-* Data Type: CSV
+* Data URL: https://github.com/Hypnos8/made-project/blob/main/project/MyLA311_Service_Request_Data_2023_20241106.zip
+* Data Type: Zip -> CSV
 
 The data Source contains service request data from MyLA311 for requests that were submitted via phone, mobile apps, website and other sources.
 
