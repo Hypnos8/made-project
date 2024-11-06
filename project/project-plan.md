@@ -12,7 +12,7 @@ Do reported signs of disorder, such as graffiti or littering, correlate with cri
 ## Description
 
 <!-- Describe your data science project in max. 200 words. Consider writing about why and how you attempt it. -->
-When the Broken Window Theory was published in 1982, the relation between a disordered environment and crime became subject to debate in the public sphere.
+When the Broken Window Theory was published in 1982, the relationship between a disordered environment and crime became subject to debate in the public sphere.
 Since then, various case studies have been conducted that analyzed how restoring order in a certain area affects the number of crimes.
 The goal of this project is to analyze whether more crimes are committed in disordered areas than in ordered ones.
 
