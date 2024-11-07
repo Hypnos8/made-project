@@ -30,8 +30,8 @@ This information could be valuable for both individuals and businesses, indicati
 
 ### Datasource1: Crime Data
 * Metadata URL: https://data.lacity.org/Public-Safety/Crime-Data-from-2020-to-Present/2nrs-mtv8/about_data
-* Data URL: https://github.com/Hypnos8/made-project/blob/main/project/Crime_Data_from_2020_to_Present_20241105.zip
-* Data Type: Zip -> CSV
+* Data URL: https://data.lacity.org/Public-Safety/Crime-Data-from-2020-to-Present/2nrs-mtv8/data_preview
+* Data Type: CSV
 
 The data source is provided by the Los Angeles Police Department (LAPD). It reflects incidents of crime in Los Angeles since 2020. 
 
@@ -41,8 +41,8 @@ Note: As the LAPD adapts to a new Record Management System, data  from  March 7t
 
 ### Datasource2: MyLA311 Service Request Data
 * Metadata URL: https://data.lacity.org/City-Infrastructure-Service-Requests/MyLA311-Service-Request-Data-2023/4a4x-mna2/about_data
-* Data URL: https://github.com/Hypnos8/made-project/blob/main/project/MyLA311_Service_Request_Data_2023_20241106.zip
-* Data Type: Zip -> CSV
+* Data URL: https://data.lacity.org/City-Infrastructure-Service-Requests/MyLA311-Service-Request-Data-2023/4a4x-mna2/data_preview
+* Data Type: CSV
 
 The data source contains service request data from MyLA311 for requests that were submitted via phone, mobile apps, website, and other sources.
 
