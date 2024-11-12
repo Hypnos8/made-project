@@ -20,7 +20,7 @@ To measure the degree of disorder, reports from MyLa311 from 2023 are used (Data
 MyLA311 is a platform provided by the City of Los Angeles that allows citizens to report issues like graffiti, illegal dumping, 
 and homeless encampments. 
 Information about reported incidents of crime in L.A. is provided by the Los Angeles Police Department (Datasource2) 
-and includes location data. 
+and includes location data. Only crimes that occurred in 2023 are considered.
 
 The results of this analysis could provide insights into whether the common perception that more crimes occur in 'bad-looking' areas holds true.
 This information could be valuable for both individuals and businesses, indicating whether avoiding disordered environments might mean avoiding crime hotspots.  
