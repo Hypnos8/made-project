@@ -48,6 +48,27 @@ The data source contains service request data from MyLA311 for requests that wer
 
 MyLA311 is a platform provided by the City of Los Angeles. It enables access to services of the city and the reporting of graffiti, street light problems and illegal dumping.
 
+### Datasource3: Street Names
+
+* Metadata URL: https://data.lacity.org/City-Infrastructure-Service-Requests/Street-Names/hntu-mwxc/about_data
+* Data URL: https://data.lacity.org/City-Infrastructure-Service-Requests/Street-Names/hntu-mwxc/data_preview
+* Data Type: CSV
+
+Official Street Names in the City of Los Angeles. The dataset was  created and maintained by the Bureau of Engineering of L.A.
+
+### Datasource4: ZIP Code Regions
+
+* Metadata URL: https://www.kaggle.com/datasets/cityofLA/los-angeles-county-shapefiles/data
+* Data URL: https://www.kaggle.com/api/v1/datasets/download/cityofLA/los-angeles-county-shapefiles
+* Data Type: CSV
+
+The data source contains ZIP Code boundary shapefiles for L.A.
+They are provided by the City of Los Angeles at Kaggle.com and were uploaded in 2017.
+
+The dataset was prefered over the actively maintained version version at  https://geohub.lacity.org/datasets/lacounty::la-county-zip-codes/about
+as an automated downloading of the files from the portal does not work reliably.
+
+
 ## Work Packages
 
 <!-- List of work packages ordered sequentially, each pointing to an issue with more details. -->
