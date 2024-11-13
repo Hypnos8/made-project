@@ -1,112 +1,46 @@
-import DataFetcher
-import pandas as pd
-from geopy.geocoders import Nominatim
-import numpy as np
+import os
 
-def download_data():
-    dataFetcher = DataFetcher.DataFetcher()
-    test_data_path = dataFetcher.fetch_data( 
-                "https://data.lacity.org/Community-Economic-Development/Department-of-Recreation-and-Parks-Facility-and-Pa/ax8j-dhzm/about_data",
-                "mytest.csv"
-                )
-    myla_data_path = dataFetcher.fetch_data( 
-                "https://data.lacity.org/City-Infrastructure-Service-Requests/MyLA311-Service-Request-Data-2023/4a4x-mna2/about_data",
-                "myla_data.csv"
-                )
-    crime_data_path = dataFetcher.fetch_data( 
-                "https://data.lacity.org/Public-Safety/Crime-Data-from-2020-to-Present/2nrs-mtv8/about_data",
-                "crime_data.csv"
-                )
-  
-    dataFetcher.cleanup()
+from project.CrimeDataCleaner import CrimeDataCleaner
+from project.DataFetcher import DataFetcher
+from project.DataLoader import DataLoader
+from project.La311Cleaner import La311Cleaner
 
-class CrimeDataCleaner():
-    def __init__(self, crime_data_path) :
-        self.data = pd.read_csv(crime_data_path)
+# Between 0 and 1 - Defines relative amount of allowed invalid rows before raising a warning
+total_invalid_threshold = 0.1
+download_timeout_seconds = 500
 
-    def filter_by_year(self):
-        time_pattern = r'\d{2}/\d{2}/2023'
-        self.data = self.data[self.data["Date Occ"].str.contains(time_pattern)]
+# Used for temporary data
+working_dir = os.getcwd()
 
-        # debug!
-        self.data = self.data.iloc[:100]
+# Craft output_dir (data in parent directory)
+parent_dir = os.path.abspath(os.path.join(working_dir, os.pardir))
+output_dir = os.path.join(parent_dir, "data")
 
-    def adjust_column_names(self):
-        self.data = self.data.rename(columns={"LOCATION": "Location",
-                                              "DATE OCC": "Date Occ",
-                                              "Time OCC": "Time Occ",
-                                              "AREA": "Area",
-                                              "AREA NAME": "Area Name",
-                                              "LAT": "Lat",
-                                              "LON": "Lon",
-                                              "Time OCC": "Time Occ",
+## DEBUG
+url_la311 = "https://data.lacity.org/City-Infrastructure-Service-Requests/MyLA311-Service-Request-Data-2023/4a4x-mna2/about_data"
+url_crime_data = "https://data.lacity.org/Public-Safety/Crime-Data-from-2020-to-Present/2nrs-mtv8/about_data"
+url_zip_data = "https://www.kaggle.com/api/v1/datasets/download/cityofLA/los-angeles-county-shapefiles"
+url_street_data = "https://data.lacity.org/City-Infrastructure-Service-Requests/Street-Names/hntu-mwxc/about_data"
 
-        })
+dataFetcher = DataFetcher(working_dir)
 
-    def drop_columns(self):
-        self.data = self.data.drop(columns=['Part 1-2', 'Mocodes',
-                                            'Status', 'Status Desc',
-                                            'Date Rptd',
-                                            'Crm Cd 1', 'Crm Cd 2', 'Crm Cd 3', 'Crm Cd 4'])
-    
-
-    def transform_location(self):
-        # remove trailing/leading whitespaces
-        self.data["Location"] = self.data["Location"].str.strip() # TODO Check why this causes a warning
-
-        # remove multiple whitespaces
-        self.data["Location"] = self.data["Location"].replace(r'\s+', ' ', regex=True) # TODO Check why this causes a warning
-
-    def transform_geocoordinates(self):
-        # Query GPS data from Nominatim (for missing GPS values)
-
-        geolocator = Nominatim(user_agent="MADE-project")
-        for i in self.data[(self.data["Lat"] == 0) | (self.data["Lon"] == 0)].index:
-            location = geolocator.geocode(self.data["LOCATION"][i] + ", Los Angeles")
-            if location:
-                self.data["Lat"][i] = location.latitude
-                self.data["Lon"][i] = location.longitude
-            else:
-                print("Failed to enrich case " + self.data["DR_NO"][i])
-                # Todo Think of strategy  what to do with bad ones
-
-    def transform_crosstreet(self):
-        self.data["Cross Street"] = self.data["Cross Street"].replace(r'\s+', ' ', regex=True) # TODO Check why this causes a warning
-    
-    def transform_gender(self):
-        self.data["Vict Sex"] = self.data["Vict Sex"].str.strip() # TODO Check why this causes a warning
-        self.data.fillna({"Vict Sex": "X"},inplace=True)
-        self.data.loc[~self.data["Vict Sex"].isin(["F", "M", "X"]), "Vict Sex"] = "X"
-
-    def transform_vict_descent(self):
-        self.data.fillna({"Vict Descent":"X"},inplace=True)
-
-    def transform_vict_age(self):
-        self.data.replace({"Vict Age": 0}, np.nan, inplace=True)
+# Extract Data
+la311_data_path = dataFetcher.fetch_data_la_city(url_la311, "myla_data.csv", download_timeout_seconds)
+crime_data_path = dataFetcher.fetch_data_la_city(url_crime_data, "crime_data.csv", download_timeout_seconds)
+street_data_path = dataFetcher.fetch_data_la_city(url_street_data, "street_names.csv", download_timeout_seconds)
+zip_data_path = dataFetcher.fetch_kaggle_geodata(url_zip_data, "CAMS_ZIPCODE_PARCEL_SPECIFIC.shp")
 
 
-    def transform_crimedata(self):
-        # Only work with rows that are required for the project 
-        # --> Crimes that occured in 2023
-        self.adjust_column_names()
-        self.filter_by_year()
-        self.drop_columns()
-        self.transform_location()
-        self.transform_crosstreet()
-        self.transform_gender()
-        self.transform_vict_descent()
-        self.transform_vict_age()
-        self.transform_geocoordinates()
 
-    def save_dataset(self):
-        self.data = self.data.astype({'Premis Cd': 'Int64',
-                                      'Weapon Used Cd': 'Int64',
+# Transform Data
+crime_data_cleaner = CrimeDataCleaner(crime_data_path, zip_data_path, street_data_path, total_invalid_threshold)
+crime_data_cleaner.transform_crimedata()
+la311_cleaner = La311Cleaner(la311_data_path, total_invalid_threshold)
+la311_cleaner.transform_data()
 
-                                      'Vict Age': 'Int64'
-                                      })
-        self.data.to_csv("made_testeout.csv", index=False)
-
-crime = CrimeDataCleaner("C:\\Users\\Eric\\Projects\\MADE\\made-project\\data\\crime_data.csv")
-crime.transform_crimedata()
-crime.save_dataset()
-
+# Load Data
+db_path = os.path.join(output_dir, "cleaned_db.sqlite")
+print("Saved results to " + db_path)
+data_loader = DataLoader(db_path)
+data_loader.load_data(crime_data_cleaner.data, "crime_data")
+data_loader.load_data(la311_cleaner.data, "la311_data")
