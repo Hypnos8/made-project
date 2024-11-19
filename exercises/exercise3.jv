@@ -41,8 +41,7 @@ pipeline worldDevelopmentReport {
         header: true;
         columns: [
         "Country Code" oftype CountryCodeAlpha3 ,
-
-        "Bond Issuance Share" oftype text,
+        "Bond Issuance Share" oftype UnitInterval,
         ];
     }
 
