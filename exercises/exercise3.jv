@@ -1,0 +1,87 @@
+pipeline worldDevelopmentReport {
+    extractor
+     -> xlsxInterpreter
+     -> sheetPicker
+     -> dataSelector
+     -> nameHeaderWriter
+     // First part of pipeline
+     -> bondTableInterpreter
+     -> bondLoader;
+
+    // second part of pipeline
+    nameHeaderWriter
+        -> gdpTableInterpreter
+        -> gpdLoader;
+    
+    
+
+    block extractor oftype HttpExtractor {
+        url: "https://thedocs.worldbank.org/en/doc/7d852628d96b9411d43e5d36d5dff941-0050062022/original/Graphs-Chapter-5-02082022.xlsx";
+    }
+
+  block xlsxInterpreter oftype XLSXInterpreter { }
+  block sheetPicker oftype SheetPicker {
+    sheetName: 'Figure S5.1.2';
+  }
+
+   block dataSelector oftype CellRangeSelector {
+   select: range P2:S45;
+ }
+    block nameHeaderWriter oftype CellWriter {
+    at: range A1:D1;
+    write: [
+      "Country Code",
+      "Economy",
+      "GDP per Capita",
+      "Bond Issuance Share",
+    ];
+  }
+
+    block bondTableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+        "Country Code" oftype CountryCodeAlpha3 ,
+
+        "Bond Issuance Share" oftype text,
+        ];
+    }
+
+        block gdpTableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+        "Country Code" oftype CountryCodeAlpha3 ,
+        "GDP per Capita" oftype PositiveDecimal,
+        ];
+    }
+
+
+    block bondLoader oftype SQLiteLoader {
+        table: "bondIssuance";
+        file: "./country-stats.sqlite";
+    }
+
+    block gpdLoader oftype SQLiteLoader {
+        table: "gdpPerCapita";
+        file: "./country-stats.sqlite";
+    }
+
+    valuetype PositiveDecimal oftype decimal {
+        constraints: [PositiveDecimalConstraint];
+    }
+    
+    constraint PositiveDecimalConstraint oftype RangeConstraint  {
+           lowerBound: 0;
+           // lower and upper bound are  inclusive by default
+    }
+
+    
+    valuetype UnitInterval oftype decimal {
+        constraints: [UnitIntervalConstraint];
+    }
+    
+    constraint UnitIntervalConstraint oftype RangeConstraint  {
+           lowerBound: 0;
+           upperBound: 1;
+           // lower and upper bound are  inclusive by default
+    }
+}
