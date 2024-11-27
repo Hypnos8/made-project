@@ -28,6 +28,9 @@ class CrimeDataCleaner:
         self.rows_for_year = len(self.data)
         logging.info("After filtering by year there are ", self.rows_for_year, " rows")
 
+        # Convert date of relevant rows from string to date
+        self.data["Date Occ"] = pd.to_datetime(self.data["Date Occ"], format="%m/%d/%Y %I:%M:%S %p")
+
     def __adjust_column_names(self):
         self.data = self.data.rename(columns={"LOCATION": "Location",
                                               "DATE OCC": "Date Occ",
@@ -111,9 +114,11 @@ class CrimeDataCleaner:
         :return:
         """
         rows_without_zipcode = len(self.data[self.data["Zipcode"].isna()])
+        rows_without_suffix = len(self.data[self.data["Suffix"].isna()])
+
         rows_after_processing = len(self.data)
         row_loss = self.rows_for_year - rows_after_processing
-        total_invalid = rows_without_zipcode + row_loss
+        total_invalid = rows_without_zipcode + row_loss + rows_without_suffix
 
         relative_row_loss = (row_loss / self.rows_for_year)
         relative_rows_missing_zipcode = rows_without_zipcode / self.rows_for_year

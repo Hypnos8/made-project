@@ -44,6 +44,10 @@ class La311Cleaner:
         self.data = self.data[self.data["CreatedDate"].str.contains(time_pattern)]
         self.rows_for_year = len(self.data)
 
+        # Convert date of relevant rows from string to date
+        self.data["CreatedDate"] = pd.to_datetime(self.data["CreatedDate"], format="%m/%d/%Y %I:%M:%S %p")
+
+
         # debug!
     # self.data = self.data.iloc[:100]
 

@@ -1,3 +1,9 @@
 .DS_Store
 /data/*
 !/data/.gitkeep
+.idea/made-project.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/inspectionProfiles/profiles_settings.xml
+project/__pycache__/DataFetcher.cpython-310.pyc

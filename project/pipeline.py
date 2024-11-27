@@ -1,9 +1,9 @@
 import os
 
-from project.CrimeDataCleaner import CrimeDataCleaner
+from project.CrimeDataTransformation import CrimeDataCleaner
 from project.DataFetcher import DataFetcher
 from project.DataLoader import DataLoader
-from project.La311Cleaner import La311Cleaner
+from project.La311DataTransformation import La311Cleaner
 
 # Between 0 and 1 - Defines relative amount of allowed invalid rows before raising a warning
 total_invalid_threshold = 0.1
@@ -33,14 +33,14 @@ zip_data_path = dataFetcher.fetch_kaggle_geodata(url_zip_data, "CAMS_ZIPCODE_PAR
 
 
 # Transform Data
-crime_data_cleaner = CrimeDataCleaner(crime_data_path, zip_data_path, street_data_path, total_invalid_threshold)
-crime_data_cleaner.transform_crimedata()
-la311_cleaner = La311Cleaner(la311_data_path, total_invalid_threshold)
-la311_cleaner.transform_data()
+crime_data_transformation = CrimeDataCleaner(crime_data_path, zip_data_path, street_data_path, total_invalid_threshold)
+crime_data_transformation.transform_crimedata()
+la311_data_transformation = La311Cleaner(la311_data_path, total_invalid_threshold)
+la311_data_transformation.transform_data()
 
 # Load Data
 db_path = os.path.join(output_dir, "cleaned_db.sqlite")
 print("Saved results to " + db_path)
 data_loader = DataLoader(db_path)
-data_loader.load_data(crime_data_cleaner.data, "crime_data")
-data_loader.load_data(la311_cleaner.data, "la311_data")
+data_loader.load_data(crime_data_transformation.data, "crime_data")
+data_loader.load_data(la311_data_transformation.data, "la311_data")
