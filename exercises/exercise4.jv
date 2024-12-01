@@ -1,0 +1,114 @@
+pipeline BatteryTemperature {
+    webExtractor
+        -> zipExtractor
+        -> filePicker
+        -> textFileInterpreter
+        -> csvInterpreter
+        -> nameHeaderWriter
+        -> nameHeaderWriterBatteryTemp
+        -> tableInterpreter
+        -> temperatureTransformer
+        -> batteryTemperatureTransformer
+        -> dataLoader;
+
+    block webExtractor oftype HttpExtractor {
+        url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
+    }
+
+    block zipExtractor oftype ArchiveInterpreter {
+        archiveType: "zip";
+    }
+
+    block filePicker oftype FilePicker {
+        path: "./data.csv";
+    }
+
+    block textFileInterpreter oftype TextFileInterpreter { }
+
+
+    block csvInterpreter oftype CSVInterpreter {
+        delimiter: ";";
+    }
+
+    block nameHeaderWriter oftype CellWriter {
+        at: range A1:E1;
+        write: [
+            "id",
+            "producer",
+            "model",
+            "month",
+            "temperature"
+        ];
+    }
+
+    block nameHeaderWriterBatteryTemp oftype CellWriter {
+        at: cell J1;
+        write: [
+            "battery_temperature"
+        ];
+    }
+
+
+    block tableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+            "id" oftype GeraetId,
+            "producer" oftype text,
+            "model" oftype text,
+            "month" oftype Monat,
+            "temperature" oftype decimal,
+            "battery_temperature" oftype decimal
+        ];
+    }
+
+    block temperatureTransformer oftype TableTransformer {
+        inputColumns: [
+            "temperature"
+        ];
+        outputColumn: "temperature";
+        uses: CelsiusToFahrenheit;
+    }
+
+    block batteryTemperatureTransformer oftype TableTransformer {
+        inputColumns: [
+            "battery_temperature"
+        ];
+        outputColumn: "battery_temperature";
+        uses: CelsiusToFahrenheit;
+    }
+
+    transform CelsiusToFahrenheit {
+        from celsius oftype decimal;
+        to fahrenheit oftype decimal;
+
+        fahrenheit: (celsius * 9/5) + 32;
+    }
+
+    block dataLoader oftype SQLiteLoader {
+        table: "temperatures";
+        file: "./temperatures.sqlite";
+    }
+
+    valuetype Monat oftype integer {
+        constraints: [
+            MonatConstraint
+        ];
+    }
+
+    constraint MonatConstraint oftype RangeConstraint {
+        lowerBound: 1;
+        upperBound: 12;
+        // lower and upper bound are  inclusive by default
+    }
+
+    valuetype GeraetId oftype integer {
+        constraints: [
+            GeraetIdConstraint
+        ];
+    }
+
+    constraint GeraetIdConstraint oftype RangeConstraint {
+        lowerBound: 1;
+        // lower and upper bound are  inclusive by default
+    }
+}
