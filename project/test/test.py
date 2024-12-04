@@ -9,11 +9,10 @@ from project.La311DataTransformation import La311Cleaner
 from project.pipeline import Pipeline
 
 
-# System-Test, Validates that the output file(s) exist
-
+#
 def test_system_pipeline_mock():
     """
-    Test pipeline but mock extraction process
+    System-Test, Validates that the output file(s) exist, extraction mocked
     Note: See below for test_system_pipeline_with_extract that also includes the extraction process
     :return:
     """
