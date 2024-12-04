@@ -6,20 +6,27 @@ import logging
 
 
 class CrimeDataCleaner:
-    def __init__(self, crime_data_path, geo_data_path, street_name_path, total_invalid_threshold):
+    def __init__(self, total_invalid_threshold):
         """
+        :param total_invalid_threshold: Between 0 and 1 - Defines relative amount of allowed invalid rows (e.g with missing ZIP Code)
+        """
+        self.data = None
+        self.zip_data = None
+        self.street_data = None
 
+        self.rows_for_year = None
+        self.total_invalid_threshold = total_invalid_threshold
+
+    def load_data(self, crime_data_path, geo_data_path, street_name_path ):
+        """
         :param crime_data_path: Path to file containing crime records
         :param geo_data_path: Path to file containing geographic information about ZIP code areas
         :param street_name_path: Path to List of Street names and suffixes
-        :param total_invalid_threshold: Between 0 and 1 - Defines relative amount of allowed invalid rows (e.g with missing ZIP Code)
         """
         self.data = pd.read_csv(crime_data_path)
         self.zip_data = geopandas.read_file(geo_data_path)
         self.street_data = pd.read_csv(street_name_path, usecols=["Street Name", "Street Suffix"])
 
-        self.rows_for_year = None
-        self.total_invalid_threshold = total_invalid_threshold
 
     def __filter_by_year(self):
         time_pattern = r'\d{2}/\d{2}/2023'
@@ -164,5 +171,4 @@ class CrimeDataCleaner:
         self.__show_statistics()
 
     def save_dataset(self, output_path):
-
         self.data.to_csv(output_path, index=False)

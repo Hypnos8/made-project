@@ -9,38 +9,74 @@ from project.La311DataTransformation import La311Cleaner
 total_invalid_threshold = 0.1
 download_timeout_seconds = 500
 
-# Used for temporary data
-working_dir = os.getcwd()
 
-# Craft output_dir (data in parent directory)
-parent_dir = os.path.abspath(os.path.join(working_dir, os.pardir))
-output_dir = os.path.join(parent_dir, "data")
+class Pipeline:
+    def __init__(self, total_invalid_threshold, download_timeout_seconds):
+        # Set URLs fpr Download
+        self.url_la311 = "https://data.lacity.org/City-Infrastructure-Service-Requests/MyLA311-Service-Request-Data-2023/4a4x-mna2/about_data"
+        self.url_crime_data = "https://data.lacity.org/Public-Safety/Crime-Data-from-2020-to-Present/2nrs-mtv8/about_data"
+        self.url_zip_data = "https://www.kaggle.com/api/v1/datasets/download/cityofLA/los-angeles-county-shapefiles"
+        self.url_street_data = "https://data.lacity.org/City-Infrastructure-Service-Requests/Street-Names/hntu-mwxc/about_data"
 
-## DEBUG
-url_la311 = "https://data.lacity.org/City-Infrastructure-Service-Requests/MyLA311-Service-Request-Data-2023/4a4x-mna2/about_data"
-url_crime_data = "https://data.lacity.org/Public-Safety/Crime-Data-from-2020-to-Present/2nrs-mtv8/about_data"
-url_zip_data = "https://www.kaggle.com/api/v1/datasets/download/cityofLA/los-angeles-county-shapefiles"
-url_street_data = "https://data.lacity.org/City-Infrastructure-Service-Requests/Street-Names/hntu-mwxc/about_data"
+        # Set timeouts
+        self.total_invalid_threshold = total_invalid_threshold
+        self.download_timeout_seconds = download_timeout_seconds
+        # Set folders
+        self.working_dir = os.getcwd()
+        # Craft output_dir (data in parent directory)
+        self.parent_dir = os.path.abspath(os.path.join(self.working_dir, os.pardir))
 
-dataFetcher = DataFetcher(working_dir)
+        # Paths of downloaded files
+        self.la311_data_path = None
+        self.crime_data_path = None
+        self.street_data_path = None
+        self.zip_data_path = None
 
-# Extract Data
-la311_data_path = dataFetcher.fetch_data_la_city(url_la311, "myla_data.csv", download_timeout_seconds)
-crime_data_path = dataFetcher.fetch_data_la_city(url_crime_data, "crime_data.csv", download_timeout_seconds)
-street_data_path = dataFetcher.fetch_data_la_city(url_street_data, "street_names.csv", download_timeout_seconds)
-zip_data_path = dataFetcher.fetch_kaggle_geodata(url_zip_data, "CAMS_ZIPCODE_PARCEL_SPECIFIC.shp")
+        self.crime_data_transformation = CrimeDataCleaner(total_invalid_threshold)
+        self.la311_data_transformation = La311Cleaner(total_invalid_threshold)
 
 
 
-# Transform Data
-crime_data_transformation = CrimeDataCleaner(crime_data_path, zip_data_path, street_data_path, total_invalid_threshold)
-crime_data_transformation.transform_crimedata()
-la311_data_transformation = La311Cleaner(la311_data_path, total_invalid_threshold)
-la311_data_transformation.transform_data()
+        output_dir = os.path.join(self.parent_dir, "data")
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        db_path = os.path.join(output_dir, "cleaned_db.sqlite")
+        self.data_loader = DataLoader(db_path)
 
-# Load Data
-db_path = os.path.join(output_dir, "cleaned_db.sqlite")
-print("Saved results to " + db_path)
-data_loader = DataLoader(db_path)
-data_loader.load_data(crime_data_transformation.data, "crime_data")
-data_loader.load_data(la311_data_transformation.data, "la311_data")
+
+
+
+    def extract(self):
+        data_fetcher = DataFetcher(self.working_dir)
+
+        # Extract Data
+        self.la311_data_path = data_fetcher.fetch_data_la_city(self.url_la311, "myla_data.csv",
+                                                              self.download_timeout_seconds)
+        self.crime_data_path = data_fetcher.fetch_data_la_city(self.url_crime_data, "crime_data.csv",
+                                                              self.download_timeout_seconds)
+        self.street_data_path = data_fetcher.fetch_data_la_city(self.url_street_data, "street_names.csv",
+                                                               self.download_timeout_seconds)
+        self.zip_data_path = data_fetcher.fetch_kaggle_geodata(self.url_zip_data, "CAMS_ZIPCODE_PARCEL_SPECIFIC.shp")
+
+        self.crime_data_transformation.load_data(self.crime_data_path, self.zip_data_path, self.street_data_path)
+        self.la311_data_transformation.load_data(self.la311_data_path)
+
+
+    def transform(self):
+        # Transform Data
+        self.crime_data_transformation.transform_crimedata()
+        self.la311_data_transformation.transform_data()
+
+    def load(self):
+        self.data_loader.load_data(self.crime_data_transformation.data, "crime_data")
+        self.data_loader.load_data(self.la311_data_transformation.data, "la311_data")
+        return self.data_loader.path
+
+    def run_pipeline(self):
+        self.extract()
+        self.transform()
+        return self.load()
+
+if __name__=="__main__":
+    pipeline = Pipeline(total_invalid_threshold, download_timeout_seconds)
+    pipeline.run_pipeline()

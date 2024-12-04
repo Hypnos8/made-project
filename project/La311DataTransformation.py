@@ -3,8 +3,12 @@ import pandas as pd
 
 
 class La311Cleaner:
-    def __init__(self, crime_data_path, total_invalid_threshold):
+    def __init__(self, total_invalid_threshold):
         self.rows_for_year = None
+        self.total_invalid_threshold = total_invalid_threshold
+        self.data = None
+
+    def load_data(self, crime_data_path):
         columns = ['SRNumber', 'CreatedDate',
                    'RequestType', 'Status', 'RequestSource', 'CreatedByUserOrganization', 'Anonymous',
                    'AddressVerified', 'ApproximateAddress', 'Latitude', 'Longitude', 'APC', 'CD',
@@ -29,9 +33,9 @@ class La311Cleaner:
                  'NCName': 'object',
                  'PolicePrecinct': 'object',
                  'ZipCode': 'object'}
-
         self.data = pd.read_csv(crime_data_path, usecols=columns, dtype=types)
-        self.total_invalid_threshold = total_invalid_threshold
+
+
 
     def __filter_by_request_type(self):
         # We're only interested in issues that affect the "visible disorder" of the enviornment
