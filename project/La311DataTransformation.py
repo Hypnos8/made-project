@@ -70,7 +70,7 @@ class La311Cleaner:
         """
         rows_after_processing = len(self.data)
 
-        rows_without_zipcode = len(self.data[self.data["ZipCode"].isna()])
+        rows_without_zipcode = len(self.data[self.data["Zipcode"].isna()])
         row_loss = self.rows_for_year - rows_after_processing
         total_invalid = rows_without_zipcode + row_loss
 
@@ -89,8 +89,11 @@ class La311Cleaner:
         if relative_total_invalid > self.total_invalid_threshold:
             logging.warning("Exceeded Threshold for invalid rows!")
 
+    def __adjust_column_names(self):
+        self.data = self.data.rename(columns={"ZipCode": "Zipcode" })
     def transform_data(self):
         self.__filter_by_request_type()
         self.__filter_by_year()
+        self.__adjust_column_names()
         self.__transform_address_verified()
         self.__show_statistics()

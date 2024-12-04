@@ -51,6 +51,7 @@ def test_transform_la311_data():
     mock_la311(la311_data_transform)
     la311_data_transform.transform_data()
     assert (la311_data_transform.data.shape, (2, 35))
+    assert (len(la311_data_transform.data[la311_data_transform.data["Zipcode"].isna()]), 0), "ZIP Codes missing"
 
 
 def test_load():
