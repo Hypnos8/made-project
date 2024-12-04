@@ -40,8 +40,7 @@ def test_transform_crime_data():
     crime_data_transform = CrimeDataCleaner(total_invalid_threshold)
     mock_crime_data(crime_data_transform)
     crime_data_transform.transform_crimedata()
-    print(crime_data_transform.data.shape)
-    assert (crime_data_transform.data.shape, (2, 21)), "Rows/ columns missing!"
+    assert crime_data_transform.data.shape == (3, 21), "Rows/ columns missing!"
     assert (len(crime_data_transform.data[crime_data_transform.data["Zipcode"].isna()]), 0), "ZIP Codes missing"
 
 
@@ -50,8 +49,8 @@ def test_transform_la311_data():
     la311_data_transform = La311Cleaner(total_invalid_threshold)
     mock_la311(la311_data_transform)
     la311_data_transform.transform_data()
-    assert (la311_data_transform.data.shape, (2, 35))
-    assert (len(la311_data_transform.data[la311_data_transform.data["Zipcode"].isna()]), 0), "ZIP Codes missing"
+    assert la311_data_transform.data.shape == (2, 19)
+    assert len(la311_data_transform.data[la311_data_transform.data["Zipcode"].isna()]) == 0, "ZIP Codes missing"
 
 
 def test_load():
