@@ -22,7 +22,7 @@ def test_system_pipeline_mock():
 
     with mock.patch.object(pipeline, 'extract') as mock_extract:
         output_path = pipeline.run_pipeline()
-        assert (mock_extract.call_count, 1)
+        assert mock_extract.call_count == 1
         assert os.path.exists(output_path)
 
 
@@ -61,7 +61,7 @@ def test_load():
     pipeline.transform()
     with mock.patch.object(pipeline.data_loader, 'load_data') as mock_load:
         pipeline.load()
-        assert (mock_load.call_count, 2)
+        assert mock_load.call_count == 2
 
 
 def test_system_pipeline_with_extract():
