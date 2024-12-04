@@ -84,7 +84,7 @@ def test_system_pipeline_with_extract():
 
 # Helper Functions that are reused #
 def mock_la311(transform):
-    la311_mock_data = pd.read_csv('test_data/la311_test_data.csv')
+    la311_mock_data = pd.read_csv('test_data/la311_test_data.csv', usecols=transform.columns)
     transform.data = la311_mock_data
 
 

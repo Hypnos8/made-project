@@ -7,12 +7,12 @@ class La311Cleaner:
         self.rows_for_year = None
         self.total_invalid_threshold = total_invalid_threshold
         self.data = None
-
-    def load_data(self, crime_data_path):
-        columns = ['SRNumber', 'CreatedDate',
+        self.columns =  ['SRNumber', 'CreatedDate',
                    'RequestType', 'Status', 'RequestSource', 'CreatedByUserOrganization', 'Anonymous',
                    'AddressVerified', 'ApproximateAddress', 'Latitude', 'Longitude', 'APC', 'CD',
                    'NC', 'NCName', 'PolicePrecinct', 'StreetName', 'Suffix', 'ZipCode']
+
+    def load_data(self, crime_data_path):
 
         types = {'SRNumber': 'object',
                  'CreatedDate': 'object',
@@ -33,7 +33,7 @@ class La311Cleaner:
                  'NCName': 'object',
                  'PolicePrecinct': 'object',
                  'ZipCode': 'object'}
-        self.data = pd.read_csv(crime_data_path, usecols=columns, dtype=types)
+        self.data = pd.read_csv(crime_data_path, usecols=self.columns, dtype=types)
 
 
 
