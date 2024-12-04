@@ -41,7 +41,7 @@ def test_transform_crime_data():
     mock_crime_data(crime_data_transform)
     crime_data_transform.transform_crimedata()
     assert crime_data_transform.data.shape == (3, 21), "Rows/ columns missing!"
-    assert (len(crime_data_transform.data[crime_data_transform.data["Zipcode"].isna()]), 0), "ZIP Codes missing"
+    assert len(crime_data_transform.data[crime_data_transform.data["Zipcode"].isna()]) == 0, "ZIP Codes missing"
 
 
 def test_transform_la311_data():
