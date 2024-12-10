@@ -25,7 +25,7 @@ def test_system_pipeline_mock():
         assert mock_extract.call_count == 1
         assert os.path.exists(output_path)
 
-
+@pytest.mark.skip(reason="Skipping test_extract with real external data")
 def test_extract():
     pipeline = init_pipeline()
     pipeline.extract()
@@ -63,7 +63,7 @@ def test_load():
         pipeline.load()
         assert mock_load.call_count == 2
 
-
+@pytest.mark.skip(reason="Skipping system test with external data")
 def test_system_pipeline_with_extract():
     """
     Tests complete Pipeline, including data fetch from external sources.
