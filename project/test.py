@@ -1,15 +1,16 @@
 import os
 from unittest import mock
+import pytest
 
 import geopandas
 import pandas as pd
 
-from project.CrimeDataTransformation import CrimeDataCleaner
-from project.La311DataTransformation import La311Cleaner
-from project.pipeline import Pipeline
+from CrimeDataTransformation import CrimeDataCleaner
+from La311DataTransformation import La311Cleaner
+from pipeline import Pipeline
 
 
-#
+mock_data_dir = "project/test_data"
 def test_system_pipeline_mock():
     """
     System-Test, Validates that the output file(s) exist, extraction mocked
@@ -83,14 +84,14 @@ def test_system_pipeline_with_extract():
 
 # Helper Functions that are reused #
 def mock_la311(transform):
-    la311_mock_data = pd.read_csv('test_data/la311_test_data.csv', usecols=transform.columns)
+    la311_mock_data = pd.read_csv(os.path.join(mock_data_dir,'la311_test_data.csv'), usecols=transform.columns)
     transform.data = la311_mock_data
 
 
 def mock_crime_data(transform):
-    crime_mock_data = pd.read_csv('test_data/crime_test_data.csv')
-    street_mock_data = pd.read_csv('test_data/street_test_data.csv', usecols=["Street Name", "Street Suffix"])
-    zip_mock_data = geopandas.read_file('test_data/shapefile_test_data/zip_test_data.shp')
+    crime_mock_data = pd.read_csv(os.path.join(mock_data_dir, 'crime_test_data.csv'))
+    street_mock_data = pd.read_csv(os.path.join(mock_data_dir,'street_test_data.csv'), usecols=["Street Name", "Street Suffix"])
+    zip_mock_data = geopandas.read_file(os.path.join(mock_data_dir,'shapefile_test_data/zip_test_data.shp'))
 
     transform.data = crime_mock_data
     transform.street_data = street_mock_data

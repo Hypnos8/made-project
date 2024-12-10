@@ -1,9 +1,9 @@
 import os
 
-from project.CrimeDataTransformation import CrimeDataCleaner
-from project.DataFetcher import DataFetcher
-from project.DataLoader import DataLoader
-from project.La311DataTransformation import La311Cleaner
+from CrimeDataTransformation import CrimeDataCleaner
+from DataFetcher import DataFetcher
+from DataLoader import DataLoader
+from La311DataTransformation import La311Cleaner
 
 # Between 0 and 1 - Defines relative amount of allowed invalid rows before raising a warning
 total_invalid_threshold = 0.1
