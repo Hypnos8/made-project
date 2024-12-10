@@ -25,7 +25,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pwd
-          ls ./project/
+          ls 
           pip install -r ./project/requirements.txt
 
       - name: run test
