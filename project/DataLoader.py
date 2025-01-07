@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 
@@ -6,6 +7,8 @@ class DataLoader:
         self.path = path
 
     def load_data(self, data, db_name):
+        # Delete already existing db
+        os.remove(self.path)
         conn = sqlite3.connect(self.path)
         data.to_sql(db_name, conn, if_exists='replace')
         print('Data loaded to ', self.path)
