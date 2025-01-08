@@ -142,7 +142,7 @@ class CrimeDataCleaner:
         print(msg_total_invalid)
 
         if relative_total_invalid > self.total_invalid_threshold:
-            logging.warning("Exceeded Threshold for invalid rows!")
+            logging.warning("Exceeded Threshold for invalid rows: " + str(relative_total_invalid))
 
     def __post_drop_columns(self):
         self.data = self.data.drop(columns=['index_right', 'geometry', 'Suffix_street', 'Location', 'Suffix_data'])

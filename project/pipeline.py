@@ -41,8 +41,13 @@ class Pipeline:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         db_path = os.path.join(output_dir, "cleaned_db.sqlite")
-        self.data_loader = DataLoader(db_path)
 
+        # Delete already existing db
+        try:
+            os.remove(db_path)
+        except OSError:
+            pass
+        self.data_loader = DataLoader(db_path)
 
 
 
@@ -69,6 +74,7 @@ class Pipeline:
         self.la311_data_transformation.transform_data()
 
     def load(self):
+
         self.data_loader.load_data(self.crime_data_transformation.data, "crime_data")
         self.data_loader.load_data(self.la311_data_transformation.data, "la311_data")
         return self.data_loader.path
