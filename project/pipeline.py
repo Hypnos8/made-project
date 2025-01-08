@@ -58,12 +58,13 @@ class Pipeline:
                                                                self.download_timeout_seconds)
         self.zip_data_path = data_fetcher.fetch_kaggle_geodata(self.url_zip_data, "CAMS_ZIPCODE_PARCEL_SPECIFIC.shp")
 
-        self.crime_data_transformation.load_data(self.crime_data_path, self.zip_data_path, self.street_data_path)
-        self.la311_data_transformation.load_data(self.la311_data_path)
 
 
     def transform(self):
         # Transform Data
+        self.crime_data_transformation.load_data(self.crime_data_path, self.zip_data_path, self.street_data_path)
+        self.la311_data_transformation.load_data(self.la311_data_path)
+
         self.crime_data_transformation.transform_crimedata()
         self.la311_data_transformation.transform_data()
 
@@ -72,11 +73,22 @@ class Pipeline:
         self.data_loader.load_data(self.la311_data_transformation.data, "la311_data")
         return self.data_loader.path
 
-    def run_pipeline(self):
-        self.extract()
+    def set_default_file_path(self):
+        self.la311_data_path = 'downloaded_data/myla_data.csv'
+        self.crime_data_path = 'downloaded_data/crime_data.csv'
+        self.street_data_path = 'downloaded_data/street_names.csv'
+        self.zip_data_path = 'downloaded_data/CAMS_ZIPCODE_PARCEL_SPECIFIC.shp'
+
+
+    def run_pipeline(self, do_extract=True):
+        if do_extract:
+            self.extract()
+        else:
+            self.set_default_file_path()
         self.transform()
         return self.load()
 
+
 if __name__=="__main__":
     pipeline = Pipeline(total_invalid_threshold, download_timeout_seconds)
-    pipeline.run_pipeline()
+    pipeline.run_pipeline(do_extract=False)
