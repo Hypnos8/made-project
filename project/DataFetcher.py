@@ -70,6 +70,28 @@ class DataFetcher:
 
         return os.path.join(self.target_dir, expected_shp_filename)
 
+    @retry.retry(urllib.error.HTTPError, tries=3, delay=2)
+    def fetch_population_data(self, url, expected_shp_filename):
+        """Download Data from kaggle (via direct download)
+
+        Parameters:
+
+        url(string): URL to the dataset
+        expected_shp_filename (string): expected Filename of .shp file that we will use
+
+        Returns:
+        string:Path to downloaded file
+        """
+        self.__clear_temp_dir()
+        file_name = os.path.join(self.temp_dir, "population.json")
+        urlretrieve(url, file_name)
+        os.rename(os.path.join(self.temp_dir,  file_name), os.path.join(self.target_dir, file_name))
+
+        self.__clear_temp_dir()
+
+        return os.path.join(self.target_dir, expected_shp_filename)
+
+
     def __wait_for_download(self, filetype, url, download_timeout_seconds):
         """
         Wait for download of file
