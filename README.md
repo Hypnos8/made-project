@@ -11,8 +11,15 @@ The goal of this project is to investigate whether more crimes are committed in 
 
 The results of this analysis could provide insights into whether the common perception that more crimes occur in bad-looking areas holds true. This information could be valuable for both individuals and businesses, indicating whether avoiding disordered environments might mean avoiding crime hotspots.
 
+### Pipeline Architecture
+the data is firstly fatched by the data_fetcher. Afterwards the crime and MyLa311 data are transformed by their respective transformer object. 
+Transformations include removing invalid values, adding missing values such as missing street name suffixes and preparing the data by mapping GPS coordinates to a ZIP code region for further analyzsis.
+
+The transformed data is loaded into a SQLite file.
+![Pipeline architecture](data-pipeline.jpg)
+
 # Licencse
-This project uses different licenses for code (i.e. python code and notebooks) and data
+This project uses different licenses for code (i.e. python code and notebooks) and data.
 
 ## Source Code 
 The source code is licensed under the MIT License (see README-MIT).
