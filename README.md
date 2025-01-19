@@ -22,7 +22,7 @@ The transformed data is loaded into a SQLite file.
 This project uses different licenses for code (i.e. python code and notebooks) and data.
 
 ## Source Code 
-The source code is licensed under the MIT License (see README-MIT).
+The source code is licensed under the MIT License (see `README-MIT`).
 
 ## Data 
 
