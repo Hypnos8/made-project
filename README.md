@@ -15,7 +15,7 @@ The source code is licensed under the MIT License (see README-MIT).
 Data is licensed  under a 
 [Creative Commons Attribution 4.0 International License][cc-by].
 
-Shield: [![CC BY 4.0][cc-by-shield]][cc-by]
+[![CC BY 4.0][cc-by-shield]][cc-by]
 [![CC BY 4.0][cc-by-image]][cc-by]
 
 [cc-by]: http://creativecommons.org/licenses/by/4.0/
