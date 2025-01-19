@@ -1,8 +1,8 @@
 # Analyzis of the relation between a disordered environment and crime in Los Angeles
 This repository contains adata pipeline that retrieves data from Kaggle, the L.A. Data Catalog and the U.S. Portal to analyze the relationship between crime and a disordered enviroment in L.A. in 2023.
-The results are presented in the analysis-report. All related files can be found in the folder ´project`
+The results are presented in the analysis-report. All related files can be found in the folder `project`
 
-In addition it contains all exercises for the Lecture Methods of Advanced Data Engineering offered at the FAU University Erlangen-Nürnberg in the folder ´exercises´
+In addition it contains all exercises for the Lecture Methods of Advanced Data Engineering offered at the FAU University Erlangen-Nürnberg in the folder `exercises`
 
 # Licencse
 This project uses different licenses for code (i.e. python code and notebooks) and data
