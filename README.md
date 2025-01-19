@@ -4,6 +4,13 @@ The results are presented in the analysis-report. All related files can be found
 
 In addition it contains all exercises for the Lecture Methods of Advanced Data Engineering offered at the FAU University Erlangen-Nürnberg in the folder `exercises`
 
+## Project description
+The goal of this project is to investigate whether more crimes are committed in disordered areas than in ordered ones. It therefore aims to answer the following question:
+
+> **Do reported signs of disorder, such as graffiti, correlate with crime in Los Angeles in 2023?**
+
+The results of this analysis could provide insights into whether the common perception that more crimes occur in bad-looking areas holds true. This information could be valuable for both individuals and businesses, indicating whether avoiding disordered environments might mean avoiding crime hotspots.
+
 # Licencse
 This project uses different licenses for code (i.e. python code and notebooks) and data
 
